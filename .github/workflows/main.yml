@@ -101,7 +101,8 @@ jobs:
         with:
           name: build-output
 
-      - name: Deploy output.html
-        run: |
-          echo "Deploying output.html to production..."
-          cat output.html
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./  # Path where output.html is located
