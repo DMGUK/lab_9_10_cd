@@ -77,10 +77,9 @@ jobs:
 
       - name: Run hello_world.py and save output to HTML
         run: |
-          python hello_world.py > output.html
-          echo "<html><body><pre>" >> output.html
+          echo "<html><head><title>Hello World Output</title></head><body><h1>" >> output.html
           python hello_world.py >> output.html
-          echo "</pre></body></html>" >> output.html
+          echo "</h1></body></html>" >> output.html
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
