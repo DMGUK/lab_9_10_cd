@@ -65,22 +65,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+  
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-
+  
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-
+  
       - name: Run hello_world.py and save output to HTML
         run: |
           echo "<html><head><title>Hello World Output</title></head><body><h1>" > index.html
           python hello_world.py >> index.html
           echo "</h1></body></html>" >> index.html
-
+  
       - name: Commit and push index.html to main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -90,6 +90,12 @@ jobs:
           git add index.html
           git commit -m "Add index.html file"
           git push
+  
+      - name: Upload index.html as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: index-file
+          path: index.html
 
   deploy:
     if: github.ref == 'refs/heads/main'
@@ -98,7 +104,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+  
+      - name: Download index.html artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: index-file
+  
       - name: Deploy to gh-pages branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -107,8 +118,9 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout --orphan gh-pages
           git reset --hard
-          cp index.html .
+          mv index.html ./  # Move the file to the current directory
           git add index.html
           git commit -m "Deploy index.html to GitHub Pages"
           git push --force origin gh-pages
+
 
